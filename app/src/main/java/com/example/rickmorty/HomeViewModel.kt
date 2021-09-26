@@ -10,14 +10,22 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class viewmodel @Inject constructor (private val service: Service,private val dispatcher: CoroutineDispatcher) :ViewModel() {
+class HomeViewModel @Inject constructor (private val service: Service, private val dispatcher: CoroutineDispatcher) : ViewModel() {
     fun x() {
         Timber.e("test")
         viewModelScope.launch {
             Timber.e("test")
             Timber.e("${service.getAllCharacters()}")
-            safeApiCall(dispatcher){
+            safeApiCall(dispatcher) {
                 service.getAllCharacters()
+            }
+        }
+    }
+
+    fun y() {
+        viewModelScope.launch {
+            safeApiCall(dispatcher) {
+                service.getSingleCharacter(1)
             }
         }
     }

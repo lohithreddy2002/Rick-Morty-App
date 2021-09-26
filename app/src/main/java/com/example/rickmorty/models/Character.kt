@@ -1,11 +1,10 @@
 package com.example.rickmorty.models
 
-
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class Result(
+data class Character(
     @Json(name = "created")
     val created: String,
     @Json(name = "episode")

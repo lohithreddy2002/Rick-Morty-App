@@ -6,23 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
-import coil.transform.CircleCropTransformation
 import com.example.rickmorty.databinding.FragmentHomeBinding
 import com.example.rickmorty.models.Character
 import com.example.rickmorty.utils.UiState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
+@InternalCoroutinesApi
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     lateinit var homeBinding: FragmentHomeBinding
-    private val viewModel:HomeViewModel by viewModels()
+    private val viewModel: HomeViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,20 +33,23 @@ class HomeFragment : Fragment() {
 
     }
 
+
     override fun onStart() {
         super.onStart()
         homeBinding = FragmentHomeBinding.bind(requireView())
-        lifecycleScope.launch {
-            viewModel._response.collect {
-                when(it){
-                    is UiState.Success<*> ->{
-                        it.data as Character?
-                        homeBinding.image.load(it.data?.image)
-                    }
-                }
-            }
-
+        viewModel.xi()
+        val recycleadapter = adapter()
+        homeBinding.recycle.apply{
+            adapter = recycleadapter
+            layoutManager = LinearLayoutManager(requireContext())
         }
+
+            viewModel.pagresult.observe(this@HomeFragment, {
+                recycleadapter.submitData(viewLifecycleOwner.lifecycle,it)
+
+            })
+
+
 
     }
 }

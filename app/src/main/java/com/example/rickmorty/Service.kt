@@ -14,9 +14,8 @@ interface Service {
 
     @GET("character")
     suspend fun getAllCharactersPage(
-        @Query("page") page:Int
-    ) :AllCharacters
-
+        @Query("page") page: Int
+    ): AllCharacters
 
     @GET("character/{id}")
     suspend fun getSingleCharacter(

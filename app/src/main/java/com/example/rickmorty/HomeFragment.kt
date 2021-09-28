@@ -7,14 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
-import coil.load
 import com.example.rickmorty.databinding.FragmentHomeBinding
-import com.example.rickmorty.models.Character
-import com.example.rickmorty.utils.UiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @InternalCoroutinesApi
@@ -28,28 +26,32 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel.getCharacters()
         return inflater.inflate(R.layout.fragment_home, container, false)
-
     }
-
 
     override fun onStart() {
         super.onStart()
         homeBinding = FragmentHomeBinding.bind(requireView())
-        viewModel.xi()
-        val recycleadapter = adapter()
-        homeBinding.recycle.apply{
-            adapter = recycleadapter
+        viewModel.homeCharacterPaging()
+        val recycleAdapter = CharacterPagingAdapter()
+        homeBinding.recycle.apply {
+            adapter = recycleAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
-
-            viewModel.pagresult.observe(this@HomeFragment, {
-                recycleadapter.submitData(viewLifecycleOwner.lifecycle,it)
-
-            })
-
-
-
+        viewModel.pageResult.observe(
+            this@HomeFragment,
+            {
+                recycleAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+            }
+        )
+        viewLifecycleOwner.lifecycleScope.launch {
+            recycleAdapter.loadStateFlow.collectLatest {
+                if (it.source.append is LoadState.Loading) {
+                    homeBinding.pb.visibility = View.VISIBLE
+                } else {
+                    homeBinding.pb.visibility = View.GONE
+                }
+            }
+        }
     }
 }

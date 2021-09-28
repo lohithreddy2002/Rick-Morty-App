@@ -3,7 +3,6 @@ package com.example.rickmorty
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.example.rickmorty.models.AllCharacters
-import com.example.rickmorty.models.Character
 import com.example.rickmorty.utils.ResultWrapper
 import com.example.rickmorty.utils.safeApiCall
 import kotlinx.coroutines.CoroutineDispatcher
@@ -21,11 +20,5 @@ class HomeRepository @Inject constructor(
             service.getAllCharacters()
         }
     }
-    fun getCharacters() = Pager(config = PagingConfig(maxSize = 64,pageSize = 20),pagingSourceFactory = {test(service)}).flow
-
-    suspend fun getCharacter() :ResultWrapper<Character>{
-        return safeApiCall(dispatcher){
-            service.getSingleCharacter(1)
-        }
-    }
+    fun getCharacters() = Pager(config = PagingConfig(pageSize = 10), pagingSourceFactory = { CharacterPagingSource(service) }).flow
 }

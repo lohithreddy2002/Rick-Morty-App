@@ -6,9 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".HomeFragment">
 
-<androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/recycle"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/pb"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/pb"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
